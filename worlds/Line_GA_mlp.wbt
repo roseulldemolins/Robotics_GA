@@ -1,0 +1,194 @@
+#VRML_SIM R2021b utf8
+DEF _ WorldInfo {
+  FPS 15
+  coordinateSystem "NUE"
+  randomSeed 1
+}
+Viewpoint {
+  orientation 1 0 0 4.71238898038469
+  position 4.030375522755315 3.9689395255676643 7.910026969984232
+}
+RectangleArena {
+  translation 4.03 0 7.91
+  floorSize 1.5 1.5
+  floorTileSize 1.5 1.5
+  floorAppearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "textures/circuit_line.png"
+      ]
+      repeatS FALSE
+      repeatT FALSE
+      filtering 0
+    }
+    roughness 1
+    metalness 0
+    name "line"
+  }
+  wallThickness 0.05
+  wallAppearance BrushedAluminium {
+    colorOverride 1 0.5 0.4
+  }
+}
+DEF OBSTACLE4 Solid {
+  translation 3.970682568694338 0.009999999999999112 7.42778356136522
+  children [
+    DEF BOX_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 1 0.647059 0
+        roughness 1
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.05
+        radius 0.03
+      }
+    }
+  ]
+  name "obstacle"
+  boundingObject USE BOX_SHAPE
+}
+DEF OBSTACLE5 Solid {
+  translation 4.0500086310925685 0.009999999999999112 8.404508457740668
+  children [
+    DEF BOX_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0 0.5 0.9
+        roughness 1
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.05
+        radius 0.03
+      }
+    }
+  ]
+  name "obstacle(1)"
+  boundingObject USE BOX_SHAPE
+}
+DEF OBSTACLE2 Solid {
+  translation 3.6102198322308388 0.024999999999943824 7.92275533028044
+  rotation 0 1 0 3.82203
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0.501961 1
+        roughness 1
+        metalness 0
+      }
+      geometry DEF BOX2 Box {
+        size 0.060000000000000005 0.05 0.060000000000000005
+      }
+    }
+  ]
+  name "pink box"
+  boundingObject USE BOX2
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 5
+  location 4 2 8
+  radius 12
+}
+DEF GA Robot {
+  translation 3 0 6
+  children [
+    Receiver {
+      channel 20
+    }
+    Emitter {
+      channel 19
+    }
+    Display {
+      width 500
+      height 150
+    }
+  ]
+  name "Supervisor"
+  controller "supervisorGA - CW"
+  supervisor TRUE
+}
+DEF Controller E-puck {
+  hidden position_0_0 722.923680099625
+  hidden position_0_1 947.9103413678139
+  hidden rotation_1 1 0 0 5.925815533207015
+  hidden rotation_2 -1 0 0 5.432545290875914
+  translation 4.390991625290314 -6.396624468087315e-05 8.218880082533058
+  rotation -0.00037695280440683634 -0.9999999251425375 -8.730121554934841e-05 0.5048894001121059
+  controller "epuck_python - CW"
+  emitter_channel 20
+  receiver_channel 19
+  groundSensorsSlot [
+    Transform {
+      rotation 0 0 1 1.5708
+      children [
+        DEF EPUCK_GROUND_SENSOR_CIRCUIT Transform {
+          translation 0 0.014 0
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.117647 0.815686 0.65098
+                roughness 0.5
+                metalness 0
+              }
+              geometry Box {
+                size 0.027 0.02 0.001
+              }
+            }
+          ]
+        }
+        DEF EPUCK_GS0 DistanceSensor {
+          translation -0.01 0.003 0
+          rotation 0 0 1 -1.57
+          children [
+            DEF EPUCK_GS_SHAPE Shape {
+              appearance PBRAppearance {
+                baseColor 0.3 0.2 0.2
+                roughness 0.4
+                metalness 0
+              }
+              geometry Box {
+                size 0.002 0.004 0.002
+              }
+            }
+          ]
+          name "gs0"
+          lookupTable [
+            0 1000 0.1
+            0.016 300 0.1
+          ]
+          type "infra-red"
+        }
+        DEF EPUCK_GS1 DistanceSensor {
+          translation 0 0.003 0
+          rotation 0 0 1 -1.57
+          children [
+            USE EPUCK_GS_SHAPE
+          ]
+          name "gs1"
+          lookupTable [
+            0 1000 0.1
+            0.016 300 0.1
+          ]
+          type "infra-red"
+        }
+        DEF EPUCK_GS2 DistanceSensor {
+          translation 0.01 0.003 0
+          rotation 0 0 1 -1.57
+          children [
+            USE EPUCK_GS_SHAPE
+          ]
+          name "gs2"
+          lookupTable [
+            0 1000 0.1
+            0.016 300 0.1
+          ]
+          type "infra-red"
+        }
+      ]
+    }
+  ]
+}
+TexturedBackground {
+  texture "empty_office"
+}
