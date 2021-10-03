@@ -27,6 +27,7 @@ class SupervisorGA:
         self.emitter = self.supervisor.getDevice("emitter")
         self.receiver = self.supervisor.getDevice("receiver")
         self.receiver.enable(self.time_step)
+        
         # Initialize the receiver and emitter data to null
         self.receivedData = "" 
         self.receivedWeights = "" 
@@ -42,7 +43,7 @@ class SupervisorGA:
         self.num_weights = 0
         
         # Creating the initial population
-        self.population = [][]
+        self.population = []
         
         # All Genotypes
         self.genotypes = []
@@ -57,26 +58,32 @@ class SupervisorGA:
         self.display.drawText("Fitness (Average - Green)", 0,10)
 
     def createRandomPopulation(self):
+        # Wait until the supervisor receives the size of the genotypes (number of weights)
         if(self.num_weights > 0):
+            # Define the size of the population
             pop_size = (self.num_population,self.num_weights)
+            # Create the initial population with random weights
             self.population = numpy.random.uniform(low=-1.0, high=1.0, size=pop_size)
 
     def handle_receiver(self):
-        if self.receiver.getQueueLength() > 0:
+        while(self.receiver.getQueueLength() > 0):
             self.receivedData = self.receiver.getData().decode("utf-8")
-            typeMessage = self.receivedData[1:8]
+            typeMessage = self.receivedData[0:7]
+            # Check Message 
             if(typeMessage == "weights"):
-                self.receivedWeights = self.receivedData            
-            elif(typeMessage == "fitness"):
-                self.receivedFitness = self.receivedData
-
+                self.receivedWeights = self.receivedData[9:len(self.receivedData)] 
+                self.num_weights = int(self.receivedWeights)
+            elif(typeMessage == "fitness"):  
+                self.receivedFitness = float(self.receivedData[9:len(self.receivedData)])
             self.receiver.nextPacket()
         
     def handle_emitter(self):
-        string_message = str(self.emitterData)
-        string_message = string_message.encode("utf-8")
-        #print("robot handle emitter string message to send:", string_message)
-        self.emitter.send(string_message)     
+        if(self.num_weights > 0):
+            # Send genotype of an individual
+            string_message = str(self.emitterData)
+            string_message = string_message.encode("utf-8")
+            #print("Supervisor send:", string_message)
+            self.emitter.send(string_message)     
         
     def run_seconds(self,seconds):
         #print("Run Simulation")
@@ -105,7 +112,7 @@ class SupervisorGA:
     
         # Measure fitness
         fitness = self.receivedFitness
-        #print("Fitness: {}".format(fitness))
+        print("Fitness: {}".format(fitness))
         current = (generation,genotype,fitness)
         self.genotypes.append(current)  
         
@@ -128,6 +135,10 @@ class SupervisorGA:
         self.run_seconds(self.time_experiment)    
     
     def run_optimization(self):
+        # Wait until the number of weights is updated
+        while(self.num_weights == 0):
+            self.handle_receiver()
+            self.createRandomPopulation()
         
         print("starting GA optimization ...\n")
         
@@ -161,6 +172,7 @@ class SupervisorGA:
     
     
     def draw_scaled_line(self, generation, y1, y2): 
+        # Define the scale of the fitness plot
         XSCALE = int(self.width/self.num_generations);
         YSCALE = 100;
         self.display.drawLine((generation-1)*XSCALE, self.height-int(y1*YSCALE), generation*XSCALE, self.height-int(y2*YSCALE));
