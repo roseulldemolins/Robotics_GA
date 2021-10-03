@@ -13,17 +13,16 @@ class Controller:
  
         # MLP Parameters and Variables   
         ### Define bellow the architecture of your MLP incluiding the number of neurons on your input, hidden and output layers. 
-        self.number_input_layer = 9
-        self.number_hidden_layer = 5
-        self.number_output_layer = 2
+        self.number_input_layer = ?
+        self.number_hidden_layer = ?
+        self.number_output_layer = ?
         
         # Initialize the network
         self.network = ntw.MLP(self.number_input_layer,self.number_hidden_layer,self.number_output_layer)
         self.inputs = []
         
         # Calculate the number of weights of your MLP
-        number_weights = (number_input_layer+1)*number_hidden_layer + number_hidden_layer*number_output_layer
-        flag_send_number_weights = false
+        self.number_weights = (self.number_input_layer+1)*self.number_hidden_layer + self.number_hidden_layer*self.number_output_layer
 
         # Enable Motors
         self.left_motor = self.robot.getDevice('left wheel motor')
@@ -89,14 +88,10 @@ class Controller:
     def sense_compute_and_actuate(self):
         # MLP: 
         #   Input == sensory data
-        #   Output == motor values
+        #   Output == motors commands
         output = self.network.propagate_forward(self.inputs)
         self.velocity_left = output[0]
         self.velocity_right = output[1]
-
-        # Clip Velocities        
-        #self.velocity_left = self.clip_value(output[0], self.max_speed);
-        #self.velocity_right = self.clip_value(output[1], self.max_speed);
         
         # Multiply the motor values by 2 to increase the velocities
         self.left_motor.setVelocity(self.velocity_left*2)
@@ -106,50 +101,52 @@ class Controller:
         
         ### Define the fitness function to increase the speed of the robot and 
         ### to encourage the robot to move forward only
-        # forwardFitness = ?
+        forwardFitness = ?
         
         ### Define the fitness function to encourage the robot to follow the line
-        # followLineFitness = ?
+        followLineFitness = ?
                 
         ### Define the fitness function to avoid collision
-        # avoidCollisionFitness = ? 
+        avoidCollisionFitness = ?
         
         ### Define the fitness function to avoid spining behaviour
-        # spinningFitness = ? 
+        spinningFitness = ?
          
         ### Define the fitness function of this iteration which should be a combination of the previous functions         
-        # combinedFitness = ?
+        combinedFitness = ?
         
         self.fitness_values.append(combinedFitness)
         self.fitness = np.mean(self.fitness_values) 
 
     def handle_emitter(self):
-        if(flag_send_number_weights == false):
-            # Send the self.fitness value to the supervisor
-            data = str("weights: " + number_weights)
-            string_message = str(data)
-            string_message = string_message.encode("utf-8")
-            #print("Robot handle emitter string message to send:", string_message)
-            self.emitter.send(string_message)
-        else:
-            # Send the self.fitness value to the supervisor
-            data = str("fitness: " + self.fitness)
-            string_message = str(data)
-            string_message = string_message.encode("utf-8")
-            #print("Robot handle emitter string message to send:", string_message)
-            self.emitter.send(string_message)
+        # Send the self.fitness value to the supervisor
+        data = str(self.number_weights)
+        data = "weights: " + data
+        string_message = str(data)
+        string_message = string_message.encode("utf-8")
+        #print("Robot send:", string_message)
+        self.emitter.send(string_message)
+
+        # Send the self.fitness value to the supervisor
+        data = str(self.fitness)
+        data = "fitness: " + data
+        string_message = str(data)
+        string_message = string_message.encode("utf-8")
+        #print("Robot send fitness:", string_message)
+        self.emitter.send(string_message)
             
     def handle_receiver(self):
         if self.receiver.getQueueLength() > 0:
-            # Adjust the Data to our model
-            self.receivedData = self.receiver.getData().decode("utf-8")
-            self.receivedData = self.receivedData[1:-1]
-            self.receivedData = self.receivedData.split()
-            x = np.array(self.receivedData)
-            self.receivedData = x.astype(float)
-            #print("Controller handle receiver data:", self.receivedData)
-            self.receiver.nextPacket()
-            
+            while(self.receiver.getQueueLength() > 0):
+                # Adjust the Data to our model
+                self.receivedData = self.receiver.getData().decode("utf-8")
+                self.receivedData = self.receivedData[1:-1]
+                self.receivedData = self.receivedData.split()
+                x = np.array(self.receivedData)
+                self.receivedData = x.astype(float)
+                #print("Controller handle receiver data:", self.receivedData)
+                self.receiver.nextPacket()
+                
             # Is it a new Genotype?
             if(np.array_equal(self.receivedDataPrevious,self.receivedData) == False):
                 self.flagMessage = True
@@ -180,8 +177,8 @@ class Controller:
             #print("Ground Sensors \n    left {} center {} right {}".format(left,center,right))
                         
             ### Please adjust the ground sensors values to facilitate learning 
-            min_gs = 0 # < Black
-            max_gs = 4000 # > White
+            min_gs = ?
+            max_gs = ?
             
             if(left > max_gs): left = max_gs
             if(center > max_gs): center = max_gs
@@ -199,12 +196,12 @@ class Controller:
             # Read Distance Sensors
             for i in range(8):
                 ### Select the distance sensors that you will use
-                if(i==0 or i==1 or i==2 or i==3  or i==4 or i==5 or i==6 or i==7):        
+                if(i==0 or i==1 or i==2 or i==3 or i==4 or i==5 or i==6 or i==7):        
                     temp = self.proximity_sensors[i].getValue()
                     
                     ### Please adjust the distance sensors values to facilitate learning 
-                    min_ds = 0  
-                    max_ds = 4000
+                    min_ds = ? 
+                    max_ds = ?
                     
                     if(temp > max_ds): temp = max_ds
                     if(temp < min_ds): temp = min_ds
