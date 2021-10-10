@@ -1,12 +1,12 @@
 #VRML_SIM R2021b utf8
 DEF _ WorldInfo {
-  FPS 15
+  FPS 30
   coordinateSystem "NUE"
   randomSeed 1
 }
 Viewpoint {
-  orientation 1 0 0 4.71238898038469
-  position 4.030375522755315 3.9689395255676643 7.910026969984232
+  orientation 0.9999722280568124 -0.005526670518730918 -0.0049999028062103 4.812361346763511
+  position 4.087006842502154 4.603494508796126 8.029462915068212
 }
 RectangleArena {
   translation 4.03 0 7.91
@@ -15,7 +15,7 @@ RectangleArena {
   floorAppearance PBRAppearance {
     baseColorMap ImageTexture {
       url [
-        "textures/circuit_line.png"
+        "textures/arena.png"
       ]
       repeatS FALSE
       repeatT FALSE
@@ -31,7 +31,7 @@ RectangleArena {
   }
 }
 DEF OBSTACLE4 Solid {
-  translation 3.970682568694338 0.009999999999999112 7.42778356136522
+  translation 3.78208 0.01 7.38001
   children [
     DEF BOX_SHAPE Shape {
       appearance PBRAppearance {
@@ -41,7 +41,7 @@ DEF OBSTACLE4 Solid {
       }
       geometry Cylinder {
         height 0.05
-        radius 0.03
+        radius 0.025
       }
     }
   ]
@@ -49,7 +49,7 @@ DEF OBSTACLE4 Solid {
   boundingObject USE BOX_SHAPE
 }
 DEF OBSTACLE5 Solid {
-  translation 4.0500086310925685 0.009999999999999112 8.404508457740668
+  translation 4.48627 0.01 7.88064
   children [
     DEF BOX_SHAPE Shape {
       appearance PBRAppearance {
@@ -67,17 +67,17 @@ DEF OBSTACLE5 Solid {
   boundingObject USE BOX_SHAPE
 }
 DEF OBSTACLE2 Solid {
-  translation 3.6102198322308388 0.024999999999943824 7.92275533028044
-  rotation 0 1 0 3.82203
+  translation 3.59562 0.025 8.32771
+  rotation 0 1 0 2.85387e-06
   children [
     Shape {
       appearance PBRAppearance {
-        baseColor 1 0.501961 1
+        baseColor 0.1 0.5 0.3
         roughness 1
         metalness 0
       }
       geometry DEF BOX2 Box {
-        size 0.060000000000000005 0.05 0.060000000000000005
+        size 0.06 0.04 0.06
       }
     }
   ]
@@ -109,12 +109,18 @@ DEF GA Robot {
   supervisor TRUE
 }
 DEF Controller E-puck {
-  hidden position_0_0 722.923680099625
-  hidden position_0_1 947.9103413678139
-  hidden rotation_1 1 0 0 5.925815533207015
-  hidden rotation_2 -1 0 0 5.432545290875914
-  translation 4.390991625290314 -6.396624468087315e-05 8.218880082533058
-  rotation -0.00037695280440683634 -0.9999999251425375 -8.730121554934841e-05 0.5048894001121059
+  hidden position_0_0 622853.962915324
+  hidden position_0_1 721274.1993514874
+  hidden linearVelocity_0 -0.0560435285764298 1.8715885232692152e-06 -0.007077889613363414
+  hidden angularVelocity_0 0.0044403909889067 -0.032003505998536866 -0.03402403286168005
+  hidden rotation_1 -1 0 0 1.803414611616468
+  hidden linearVelocity_1 -0.05669973751596458 -1.9476454786684977e-06 -0.007166898728199008
+  hidden angularVelocity_1 -0.3584156897259533 -0.03201340451392807 2.8390976805697576
+  hidden rotation_2 -1 0 0 2.225199113998408
+  hidden linearVelocity_2 -0.0550594661612811 -2.695342257674192e-06 -0.00694607835055328
+  hidden angularVelocity_2 -0.34695924109303483 -0.03155362631529507 2.7489749039713933
+  translation 4.0786939253311365 -6.466781809810057e-05 7.351348455194637
+  rotation 0.00019692796383635768 -0.9999999694896362 -0.00014913116251277222 -1.444182890767003
   controller "epuck_python - CW"
   emitter_channel 20
   receiver_channel 19
