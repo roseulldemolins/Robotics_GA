@@ -93,9 +93,9 @@ class Controller:
         self.velocity_left = output[0]
         self.velocity_right = output[1]
         
-        # Multiply the motor values by 2 to increase the velocities
-        self.left_motor.setVelocity(self.velocity_left*2)
-        self.right_motor.setVelocity(self.velocity_right*2)
+        # Multiply the motor values by 3 to increase the velocities
+        self.left_motor.setVelocity(self.velocity_left*3)
+        self.right_motor.setVelocity(self.velocity_right*3)
 
     def calculate_fitness(self):
         
