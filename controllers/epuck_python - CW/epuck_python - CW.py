@@ -12,13 +12,15 @@ class Controller:
         self.max_speed = 1  # m/s
  
         # MLP Parameters and Variables   
-        ### Define bellow the architecture of your MLP incluiding the number of neurons on your input, hidden and output layers. 
+        ### Define bellow the architecture of your MLP incluiding the number of neurons on your input, hiddens and output layers. 
         self.number_input_layer = ?
-        self.number_hidden_layer = ?
+        self.number_hidden_layer_1 = ?
+        #self.number_hidden_layer_N = ?
         self.number_output_layer = ?
         
         # Initialize the network
-        self.network = ntw.MLP(self.number_input_layer,self.number_hidden_layer,self.number_output_layer)
+        self.network = ntw.MLP(self.number_input_layer,self.number_hidden_layer_1,self.number_output_layer)
+        # Example with 2 hidden layers        #ntw.MLP(self.number_input_layer,self.number_hidden_layer_1,self.number_hidden_layer_2,self.number_output_layer)
         self.inputs = []
         
         # Calculate the number of weights of your MLP
