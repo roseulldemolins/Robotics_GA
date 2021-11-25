@@ -14,17 +14,27 @@ class Controller:
         # MLP Parameters and Variables   
         ### Define bellow the architecture of your MLP incluiding the number of neurons on your input, hiddens and output layers. 
         self.number_input_layer = ?
-        self.number_hidden_layer_1 = ?
-        #self.number_hidden_layer_N = ?
+        self.number_hidden_layer = [?] # Example with two hidden layers: self.number_hidden_layer = [7,5]
         self.number_output_layer = ?
         
+        # Create a list with the number of neurons per layer
+        self.number_neuros_per_layer = []
+        self.number_neuros_per_layer.append(self.number_input_layer)
+        self.number_neuros_per_layer.extend(self.number_hidden_layer)
+        self.number_neuros_per_layer.append(self.number_output_layer)
+        
         # Initialize the network
-        self.network = ntw.MLP(self.number_input_layer,self.number_hidden_layer_1,self.number_output_layer)
-        # Example with 2 hidden layers        #ntw.MLP(self.number_input_layer,self.number_hidden_layer_1,self.number_hidden_layer_2,self.number_output_layer)
+        self.network = ntw.MLP(self.number_neuros_per_layer)
         self.inputs = []
         
         # Calculate the number of weights of your MLP
-        self.number_weights = (self.number_input_layer+1)*self.number_hidden_layer + self.number_hidden_layer*self.number_output_layer
+        self.number_weights = 0
+        for n in range(1,len(self.number_neuros_per_layer)):
+            if(n == 1):
+                # Input + bias
+                self.number_weights += (self.number_neuros_per_layer[n-1]+1)*self.number_neuros_per_layer[n]
+            else:
+                self.number_weights += self.number_neuros_per_layer[n-1]*self.number_neuros_per_layer[n]
 
         # Enable Motors
         self.left_motor = self.robot.getDevice('left wheel motor')
@@ -65,21 +75,37 @@ class Controller:
 
     def check_for_new_genes(self):
         if(self.flagMessage == True):
-                # Receive genotype and set the weights of the network
-                #print("\n New genotype")
-                self.data = []
-                part1 = (self.number_input_layer+1)*self.number_hidden_layer
-                part2 = self.number_hidden_layer*self.number_output_layer
-                self.network.weightsPart1 = self.receivedData[0:part1]
-                self.network.weightsPart2 = self.receivedData[part1:]
-                self.network.weightsPart1 = self.network.weightsPart1.reshape([self.number_input_layer+1,self.number_hidden_layer])
-                self.network.weightsPart2 = self.network.weightsPart2.reshape([self.number_hidden_layer,self.number_output_layer])
-                self.data.append(self.network.weightsPart1)
-                self.data.append(self.network.weightsPart2)
-                self.network.weights = self.data
+                # Split the list based on the number of layers of your network
+                part = []
+                for n in range(1,len(self.number_neuros_per_layer)):
+                    if(n == 1):
+                        part.append((self.number_neuros_per_layer[n-1]+1)*(self.number_neuros_per_layer[n]))
+                    else:   
+                        part.append(self.number_neuros_per_layer[n-1]*self.number_neuros_per_layer[n])
                 
+                # Set the weights of the network
+                data = []
+                weightsPart = []
+                sum = 0
+                for n in range(1,len(self.number_neuros_per_layer)):
+                    if(n == 1):
+                        weightsPart.append(self.receivedData[n-1:part[n-1]])
+                    elif(n == (len(self.number_neuros_per_layer)-1)):
+                        weightsPart.append(self.receivedData[sum:])
+                    else:
+                        weightsPart.append(self.receivedData[sum:sum+part[n-1]])
+                    sum += part[n-1]
+                for n in range(1,len(self.number_neuros_per_layer)):  
+                    if(n == 1):
+                        weightsPart[n-1] = weightsPart[n-1].reshape([self.number_neuros_per_layer[n-1]+1,self.number_neuros_per_layer[n]])    
+                    else:
+                        weightsPart[n-1] = weightsPart[n-1].reshape([self.number_neuros_per_layer[n-1],self.number_neuros_per_layer[n]])    
+                    data.append(weightsPart[n-1])                
+                self.network.weights = data
+                
+                #Reset fitness list
                 self.fitness_values = []
-
+        
     def clip_value(self,value,min_max):
         if (value > min_max):
             return min_max;

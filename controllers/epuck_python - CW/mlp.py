@@ -23,10 +23,10 @@ class MLP:
         # Build layers
         self.layers = []
         # Input layer (+1 unit for bias)
-        self.layers.append(np.ones(self.shape[0]+1))
+        self.layers.append(np.ones(self.shape[0][0]+1))
         # Hidden layer(s) + output layer
         for i in range(1,n):
-            self.layers.append(np.ones(self.shape[i]))
+            self.layers.append(np.ones(self.shape[0][i]))
 
         # Build weights matrix 
         self.weights = []
