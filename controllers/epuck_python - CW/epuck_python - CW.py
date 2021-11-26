@@ -12,9 +12,14 @@ class Controller:
         self.max_speed = 1  # m/s
  
         # MLP Parameters and Variables   
-        ### Define bellow the architecture of your MLP incluiding the number of neurons on your input, hiddens and output layers. 
+        ### Define below the architecture of your MLP network. 
+        ### Add the number of neurons for each layer.
+        ### The number of neurons should be in between of 1 to 20.
+        ### Number of hidden layers should be one or two.
         self.number_input_layer = ?
-        self.number_hidden_layer = [?] # Example with two hidden layers: self.number_hidden_layer = [7,5]
+        # Example with one hidden layers: self.number_hidden_layer = [5]
+        # Example with two hidden layers: self.number_hidden_layer = [7,5]
+        self.number_hidden_layer = [?] 
         self.number_output_layer = ?
         
         # Create a list with the number of neurons per layer
